@@ -1,15 +1,15 @@
-from marshmallow import Schema, fields, ValidationError
-from bson import ObjectId
+from marshmallow import Schema, fields
+class AlumnoSchema(Schema):
+    id = fields.Str(dump_only=True)
+    nombre = fields.Str(required=True)
+    apellido = fields.Str(required=True)
+    telefono = fields.Str(required=True)
+class AlumnosSchema(Schema):
+    id = fields.Str(dump_only=True)
+    nombre = fields.Str()
+    apellido = fields.Str()
+    telefono = fields.Str()
 
-def validate_objectid(value):
-    try:
-        return ObjectId(value)
-    except:
-        raise ValidationError("ID inválido.")
+alumno_schema = AlumnoSchema()
+alumnos_schema = AlumnosSchema(many=True)
 
-class UserSchema(Schema):
-    _id = fields.Str(validate=validate_objectid, dump_only=True)
-    name = fields.Str(required=True)
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
