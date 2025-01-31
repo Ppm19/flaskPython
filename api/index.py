@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from bson import ObjectId
 from api.config import db
-from models import alumno_schema, alumnos_schema
+from api.models import alumno_schema, alumnos_schema
 
 app = Flask(__name__)
 CORS(app, origins="https://vercel-front-sage.vercel.app")
