@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from bson import ObjectId
-from config import db
+from api.config import db
 from models import alumno_schema, alumnos_schema
 
 app = Flask(__name__)
