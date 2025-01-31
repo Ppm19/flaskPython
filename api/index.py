@@ -12,26 +12,28 @@ alumnos_collection = db["alumnos"]
 
 @app.route('/api/alumnos', methods=['GET'])
 def get_alumnos():
-    alumnos = list(alumnos_collection.find({}, {"_id": 1, "nombre": 1, "apellido": 1, "telefono": 1}))
+    alumnos = list(alumnos_collection.find({}, {"id": 1, "nombre": 1, "apellido": 1, "telefono": 1}))
     return jsonify(alumnos_schema.dump(alumnos))
+
 
 @app.route('/api/alumnos/<alumno_id>', methods=['GET'])
 def get_alumno_by_id(alumno_id):
     try:
-        print(alumnos_collection.find_one({"id": alumno_id}))
-
-        alumno_id = int(alumno_id)
+        print(f"Buscando alumno con id: {alumno_id}")
+        alumno_id = int(alumno_id)  # Asegúrate de que el id es un número
         alumno = alumnos_collection.find_one({"id": alumno_id})
-        
+
+        print(f"Resultado de la búsqueda: {alumno}")  # Muestra el resultado de la búsqueda
+
         if not alumno:
             return jsonify({"error": "Alumno no encontrado"}), 404
-        
+
         return jsonify(alumno_schema.dump(alumno))
-    
     except ValueError:
         return jsonify({"error": "ID inválido, debe ser un número"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 
