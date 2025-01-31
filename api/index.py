@@ -18,6 +18,7 @@ def get_alumnos():
 @app.route('/api/alumnos/<alumno_id>', methods=['GET'])
 def get_alumno_by_id(alumno_id):
     try:
+        print(f"Recibiendo alumno_id: {alumno_id}")
         alumno_id = int(alumno_id)
         alumno = alumnos_collection.find_one({"id": alumno_id})
         
@@ -25,10 +26,12 @@ def get_alumno_by_id(alumno_id):
             return jsonify({"error": "Alumno no encontrado"}), 404
         
         return jsonify(alumno_schema.dump(alumno))
+    
     except ValueError:
-        return jsonify({"error": "ID inválido"}), 400
+        return jsonify({"error": "ID inválido, debe ser un número"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 @app.route('/api/alumnos', methods=['POST'])
