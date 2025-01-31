@@ -18,7 +18,8 @@ def get_alumnos():
 @app.route('/api/alumnos/<alumno_id>', methods=['GET'])
 def get_alumno_by_id(alumno_id):
     try:
-        print(f"Recibiendo alumno_id: {alumno_id}")
+        print(alumnos_collection.find_one({"id": alumno_id}))
+
         alumno_id = int(alumno_id)
         alumno = alumnos_collection.find_one({"id": alumno_id})
         
