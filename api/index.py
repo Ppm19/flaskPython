@@ -2,36 +2,44 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from bson import ObjectId
 from API.config import db
-from API.models import user_schema, users_schema
+from API.models import alumno_schema, alumnos_schema
 
 app = Flask(__name__)
-CORS(app)
-users_collection = db["users"]
+CORS(app, origins="https://vercel-front-sage.vercel.app")
 
-# Obtener todos los usuarios
-@app.route('/api/users', methods=['GET'])
-def get_users():
-    users = list(users_collection.find({}, {"_id": 1, "name": 1}))
-    return jsonify(users_schema.dump(users))
+alumnos_collection = db["alumnos"]
 
-# Obtener usuario por ID
-@app.route('/api/users/<user_id>', methods=['GET'])
-def get_user_by_id(user_id):
+
+@app.route('/api/alumnos', methods=['GET'])
+def get_alumnos():
+    alumnos = list(alumnos_collection.find({}, {"_id": 1, "nombre": 1, "apellido": 1, "telefono": 1}))
+    return jsonify(alumnos_schema.dump(alumnos))
+
+
+@app.route('/api/alumnos/<alumno_id>', methods=['GET'])
+def get_alumno_by_id(alumno_id):
     try:
-        user = users_collection.find_one({"_id": ObjectId(user_id)})
-        if not user:
-            return jsonify({"error": "Usuario no encontrado"}), 404
-        return jsonify(user_schema.dump(user))
+        alumno = alumnos_collection.find_one({"_id": ObjectId(alumno_id)})
+        if not alumno:
+            return jsonify({"error": "Alumno no encontrado"}), 404
+        return jsonify(alumno_schema.dump(alumno))
     except:
         return jsonify({"error": "ID inválido"}), 400
 
-# Agregar un usuario
-@app.route('/api/users', methods=['POST'])
-def add_user():
+@app.route('/api/alumnos', methods=['POST'])
+def add_alumno():
     try:
-        data = user_schema.load(request.get_json())
-        result = users_collection.insert_one({"name": data["name"]})
+        data = alumno_schema.load(request.get_json())
+        result = alumnos_collection.insert_one({
+            "nombre": data["nombre"],
+            "apellido": data["apellido"],
+            "telefono": data["telefono"]
+        })
+        
         data["_id"] = str(result.inserted_id)
         return jsonify(data), 201
     except ValidationError as err:
         return jsonify(err.messages), 400
+
+if __name__ == '__main__':
+    app.run()
